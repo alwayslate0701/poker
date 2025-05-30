@@ -3,6 +3,19 @@ import java.util.*;
 public class poker {
     // cards value order of rank
     private static final String CARD_VALUES = "23456789TJQKA";
+
+    //Hand contains rank and kickers
+    private static class Hand {
+        //rank is hand pattern (e.g pair, three of a kind and etc.)
+        int rank;
+        //kickers are the cards that do not form a rank
+        int[] kickers;
+        
+        Hand(int rank, int[] kickers) {
+            this.rank = rank;
+            this.kickers = kickers;
+        }
+    }
     
     public static void main(String[] args) {
         // System.out.println("Hello World!");
@@ -33,5 +46,28 @@ public class poker {
         //output
         System.out.println("Player 1: " + player1Wins + " hands");
         System.out.println("Player 2: " + player2Wins + " hands");
+    }
+
+    private static Hand evaluateHand(String[] cards) {
+        // Extract values and suits
+        int[] values = new int[5];
+        int[] suits = new int[5];
+        
+        for (int i = 0; i < 5; i++) {
+            String card = cards[i];
+            values[i] = CARD_VALUES.indexOf(card.charAt(0));
+            suits[i] = card.charAt(1);
+        }
+        
+        // Sort values in descending order for easier evaluation
+        Arrays.sort(values);
+        for (int i = 0; i < 2; i++) {
+            int temp = values[i];
+            values[i] = values[4 - i];
+            values[4 - i] = temp;
+        }
+
+        //for avoiding implement err
+        return new Hand(1,values);
     }
 }
