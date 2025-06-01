@@ -82,7 +82,53 @@ public class poker {
         int[] c = getValueCounts(values);
         //test getValueCount
         System.out.println(Arrays.toString(c));
-        //for avoiding implement err
+        // Check for royal flush
+        if (flush && straight && values[0] == CARD_VALUES.indexOf('A')) {
+            return new Hand(10, values);
+        }
+        
+        // Check for straight flush
+        if (flush && straight) {
+            return new Hand(9, values);
+        }
+        
+        // Check for four of a kind
+        int[] valueCounts = getValueCounts(values);
+        if (valueCounts[0] == 4) {
+            return new Hand(8, getKickers(values, 1));
+        }
+        
+        // Check for full house
+        if (valueCounts[0] == 3 && valueCounts[1] == 2) {
+            return new Hand(7, values);
+        }
+        
+        // check for flush
+        if (flush) {
+            return new Hand(6, values);
+        }
+        
+        // check for straight
+        if (straight) {
+            return new Hand(5, values);
+        }
+        
+        // check for three of a kind
+        if (valueCounts[0] == 3) {
+            return new Hand(4, getKickers(values, 2));
+        }
+        
+        // check for two pairs
+        if (valueCounts[0] == 2 && valueCounts[1] == 2) {
+            return new Hand(3, getKickers(values, 1));
+        }
+        
+        // check for pair
+        if (valueCounts[0] == 2) {
+            return new Hand(2, getKickers(values, 3));
+        }
+
+        // high card
         return new Hand(1,values);
     }
 
@@ -97,7 +143,7 @@ public class poker {
     
     //check straight
     private static boolean isStraight(int[] values) {
-        // Check if values are consecutive (already sorted in descending order)
+        // check if values are consecutive (already sorted in descending order)
         for (int i = 0; i < 4; i++) {
             if (values[i] - 1 != values[i + 1]) {
                 return false;
@@ -115,7 +161,7 @@ public class poker {
             countMap.put(value, countMap.getOrDefault(value, 0) + 1);
         }
         
-        // Get counts in descending order
+        //get counts in descending order
         List<Integer> counts = new ArrayList<>(countMap.values());
         counts.sort(Collections.reverseOrder());
         
@@ -126,4 +172,53 @@ public class poker {
         return result;
     }
 
+    private static int[] getKickers(int[] values, int numKickers) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int value : values) {
+            countMap.put(value, countMap.getOrDefault(value, 0) + 1);
+        }
+        
+        // Separate paired cards and kickers
+        List<Integer> paired = new ArrayList<>();
+        List<Integer> kickers = new ArrayList<>();
+        
+        for (int value : values) {
+            if (countMap.get(value) > 1) {
+                paired.add(value);
+            } else {
+                kickers.add(value);
+            }
+        }
+        
+        // sort paired cards by count then value
+        paired.sort(Collections.reverseOrder());
+        
+        // sort kickers in descending order
+        kickers.sort(Collections.reverseOrder());
+
+        // two pairs which would be compaired in order of top pair,bottom pair, kicker
+        if (paired.size() == 2) { 
+            // return top pair, bottom paire and kicker
+            return new int[]{paired.get(0), paired.get(1), kickers.get(0)};
+        }
+        
+        //combine results
+        int[] result = new int[1 + numKickers];
+        
+        //three kind, 1 pair
+        if (!paired.isEmpty()) {
+            result[0] = paired.get(0); 
+        } 
+        //high card
+        else {
+            result[0] = kickers.get(0); 
+        }
+
+        // put kickers behind pattern card
+        for (int i = 0; i < numKickers && i < kickers.size(); i++) {
+            result[i + 1] = kickers.get(i);
+        }
+
+        return result;
+    }
 }
