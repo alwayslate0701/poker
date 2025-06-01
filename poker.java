@@ -66,8 +66,49 @@ public class poker {
             values[i] = values[4 - i];
             values[4 - i] = temp;
         }
+        
+        boolean flush = isFlush(suits);
+        boolean straight = isStraight(values);
 
         //for avoiding implement err
         return new Hand(1,values);
     }
+
+    //check flush
+    private static boolean isFlush(int[] suits) {
+        int firstSuit = suits[0];
+        for (int suit : suits) {
+            if (suit != firstSuit) return false;
+        }
+        return true;
+    }
+    
+    //check straight
+    private static boolean isStraight(int[] values) {
+        // Check if values are consecutive (already sorted in descending order)
+        for (int i = 0; i < 4; i++) {
+            if (values[i] - 1 != values[i + 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static int[] getValueCounts(int[] values) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int value : values) {
+            countMap.put(value, countMap.getOrDefault(value, 0) + 1);
+        }
+        
+        // Get counts in descending order
+        List<Integer> counts = new ArrayList<>(countMap.values());
+        counts.sort(Collections.reverseOrder());
+        
+        int[] result = new int[counts.size()];
+        for (int i = 0; i < counts.size(); i++) {
+            result[i] = counts.get(i);
+        }
+        return result;
+    }
+
 }
