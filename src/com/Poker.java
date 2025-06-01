@@ -1,6 +1,8 @@
+package src.com;
 import java.util.*;
 
-public class poker {
+
+public class Poker {
     // cards value order of rank
     private static final String CARD_VALUES = "23456789TJQKA";
 
@@ -38,10 +40,21 @@ public class poker {
                 String[] player1Cards = Arrays.copyOfRange(cards, 0, 5);
                 String[] player2Cards = Arrays.copyOfRange(cards, 5, 10);
                 // for test
-                System.out.println("Player 1: " + Arrays.toString(player1Cards));
-                System.out.println("Player 2: " + Arrays.toString(player2Cards));
+                // System.out.println("Player 1: " + Arrays.toString(player1Cards));
+                // System.out.println("Player 2: " + Arrays.toString(player2Cards));
+                
+                //read cards into hand
                 Hand p1 = evaluateHand(player1Cards);
                 Hand p2 = evaluateHand(player2Cards);
+
+                int comparison = compareHands(p1, p2);
+                if (comparison > 0) {
+                    player1Wins++;
+                }
+                if (comparison < 0) {
+                    player2Wins++;
+                }
+                //tie no count change
             }
         }
         
@@ -73,15 +86,15 @@ public class poker {
         boolean straight = isStraight(values);
 
         //test
-        if(flush){
-            System.out.println("this hand is flush");
-        }
-        if(straight){
-            System.out.println("this hand is straight");
-        }
-        int[] c = getValueCounts(values);
-        //test getValueCount
-        System.out.println(Arrays.toString(c));
+        // if(flush){
+        //     System.out.println("this hand is flush");
+        // }
+        // if(straight){
+        //     System.out.println("this hand is straight");
+        // }
+        // int[] c = getValueCounts(values);
+        // //test getValueCount
+        // System.out.println(Arrays.toString(c));
         // Check for royal flush
         if (flush && straight && values[0] == CARD_VALUES.indexOf('A')) {
             return new Hand(10, values);
@@ -92,13 +105,13 @@ public class poker {
             return new Hand(9, values);
         }
         
-        // Check for four of a kind
+        // check for four of a kind
         int[] valueCounts = getValueCounts(values);
         if (valueCounts[0] == 4) {
             return new Hand(8, getKickers(values, 1));
         }
         
-        // Check for full house
+        // check for full house
         if (valueCounts[0] == 3 && valueCounts[1] == 2) {
             return new Hand(7, values);
         }
@@ -220,5 +233,21 @@ public class poker {
         }
 
         return result;
+    }
+
+    private static int compareHands(Hand hand1, Hand hand2) {
+        //compare rank
+        if (hand1.rank != hand2.rank) {
+            return Integer.compare(hand1.rank, hand2.rank);
+        }
+        
+        // compare kickers
+        for (int i = 0; i < hand1.kickers.length; i++) {
+            if (hand1.kickers[i] != hand2.kickers[i]) {
+                return Integer.compare(hand1.kickers[i], hand2.kickers[i]);
+            }
+        }
+        //tie
+        return 0; 
     }
 }
