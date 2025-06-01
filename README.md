@@ -1,6 +1,6 @@
 # poker
 Using build.sh to build the my-poker-solution.jar
-Go to the project patj
+Go to the project path
 make sure you run the command "chmod +x build.sh" to make build.sh runable
 then "./build"
 
