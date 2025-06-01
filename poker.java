@@ -40,6 +40,8 @@ public class poker {
                 // for test
                 System.out.println("Player 1: " + Arrays.toString(player1Cards));
                 System.out.println("Player 2: " + Arrays.toString(player2Cards));
+                Hand p1 = evaluateHand(player1Cards);
+                Hand p2 = evaluateHand(player2Cards);
             }
         }
         
@@ -70,6 +72,16 @@ public class poker {
         boolean flush = isFlush(suits);
         boolean straight = isStraight(values);
 
+        //test
+        if(flush){
+            System.out.println("this hand is flush");
+        }
+        if(straight){
+            System.out.println("this hand is straight");
+        }
+        int[] c = getValueCounts(values);
+        //test getValueCount
+        System.out.println(Arrays.toString(c));
         //for avoiding implement err
         return new Hand(1,values);
     }
@@ -94,7 +106,10 @@ public class poker {
         return true;
     }
 
+    //count the numbers of appearence for values
     private static int[] getValueCounts(int[] values) {
+        System.out.println(Arrays.toString(values));
+        //using hashmap to count value
         Map<Integer, Integer> countMap = new HashMap<>();
         for (int value : values) {
             countMap.put(value, countMap.getOrDefault(value, 0) + 1);
