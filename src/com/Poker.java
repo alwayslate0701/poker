@@ -167,7 +167,6 @@ public class Poker {
 
     //count the numbers of appearence for values
     private static int[] getValueCounts(int[] values) {
-        System.out.println(Arrays.toString(values));
         //using hashmap to count value
         Map<Integer, Integer> countMap = new HashMap<>();
         for (int value : values) {
